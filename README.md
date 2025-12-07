@@ -50,7 +50,7 @@
 
 ### 下载安装
 
-从 [Releases](https://github.com/rock-zhang/Shui/releases/) 页面下载最新版本。
+从 Releases 页面下载最新版本。
 
 #### macOS
 
@@ -119,24 +119,7 @@ sudo xattr -r -d com.apple.quarantine /Applications/Shui.app
 ## 社区交流
 
 欢迎 PR 和 Issue，一起探讨和改进 Shui！
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/rock-zhang/Shui)
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="public/qrcode_wechat_dark.png" />
-  <source media="(prefers-color-scheme: light)" srcset="public/qrcode_wechat_light.png" />
-  <img width="300px" src="public/qrcode_wechat_light.png" />
-</picture>
 
 ## ☕ 支持
 
 如果你觉得本项目帮助到了你，请给作者一个免费的 Star，感谢你的支持！
-
-## Star History
-
-<a href="https://www.star-history.com/#rock-zhang/Shui&Date">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=rock-zhang/Shui&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=rock-zhang/Shui&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=rock-zhang/Shui&type=Date" />
- </picture>
-</a>

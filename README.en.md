@@ -50,7 +50,7 @@ A cross-platform desktop app focused on water intake reminders, promoting office
 
 ### Download and Installation
 
-Download the latest version from the [Releases](https://github.com/rock-zhang/Shui/releases/) page.
+Download the latest version from the Releases page.
 
 #### macOS
 
@@ -113,22 +113,8 @@ sudo xattr -r -d com.apple.quarantine /Applications/Shui.app
 
 ## Community
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="public/qrcode_wechat_dark.png" />
-  <source media="(prefers-color-scheme: light)" srcset="public/qrcode_wechat_light.png" />
-  <img width="300px" src="public/qrcode_wechat_light.png" />
-</picture>
+PRs and Issues are welcome to discuss and improve Shui!
 
 ## ☕ Support
 
 If you find this project helpful, please give the author a free Star. Thank you for your support!
-
-## Star History
-
-<a href="https://www.star-history.com/#rock-zhang/Shui&Date">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=rock-zhang/Shui&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=rock-zhang/Shui&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=rock-zhang/Shui&type=Date" />
- </picture>
-</a>
