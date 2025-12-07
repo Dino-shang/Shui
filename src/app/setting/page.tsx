@@ -38,7 +38,7 @@ export default function Home() {
   }, []);
 
   const saveConfig = async (filed: string, checked: boolean) => {
-    const store = await load(STORE_NAME.config, { autoSave: false });
+    const store = await load(STORE_NAME.config, { autoSave: false, defaults: {} });
     const oldConfig = await store.get<{ value: number }>("general");
 
     setConfig({

@@ -4,9 +4,9 @@
   "version": "0.2.20",
   "identifier": "com.shui.app",
   "build": {
-    "beforeDevCommand": "yarn dev",
+    "beforeDevCommand": "pnpm dev",
     "devUrl": "http://localhost:3000/",
-    "beforeBuildCommand": "yarn build",
+    "beforeBuildCommand": "pnpm build",
     "frontendDist": "../dist"
   },
   "app": {

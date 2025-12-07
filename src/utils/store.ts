@@ -2,7 +2,7 @@ import { load } from "@tauri-apps/plugin-store";
 import { STORE_NAME } from "@/lib/constants";
 
 export async function getGeneralConfig() {
-  const store = await load(STORE_NAME.config, { autoSave: false });
+  const store = await load(STORE_NAME.config, { autoSave: false, defaults: {} });
   const [generalSetting] = await Promise.all([
     store.get<{
       isAutoStart: boolean;

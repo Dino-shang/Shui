@@ -179,9 +179,10 @@ export default function ReminderPage() {
 
   useEffect(() => {
     const storeUpdate = async () => {
-      const config_store = await load(STORE_NAME.config, { autoSave: false });
+      const config_store = await load(STORE_NAME.config, { autoSave: false, defaults: {} });
       const drinkHistory = await load(STORE_NAME.drink_history, {
         autoSave: false,
+        defaults: {},
       });
       const [goldSetting, drink = 0] = await Promise.all([
         config_store.get<{
@@ -207,7 +208,7 @@ export default function ReminderPage() {
       ...water,
       drink: totalDrink,
     });
-    const store = await load(STORE_NAME.drink_history, { autoSave: false });
+    const store = await load(STORE_NAME.drink_history, { autoSave: false, defaults: {} });
     await store.set(todayDate, totalDrink);
     await store.save();
 

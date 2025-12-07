@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { load } from "@tauri-apps/plugin-store";
 import { useTray } from "@/hooks/use-tray";
 import { invoke } from "@tauri-apps/api/core";
@@ -31,24 +31,28 @@ import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { usePlatform } from "@/hooks/use-platform";
+import { Input } from "@/components/ui/input";
 
 const goldList = ["1000", "1500", "2000", "2500", "3000", "3500", "4000"];
-const gapList = ["10", "20", "30", "45", "60"];
-
-if (process.env.NODE_ENV === "development") {
-  gapList.unshift("1");
-}
+// 预设的常用间隔选项
+const presetGaps = [15, 20, 30, 45, 60];
+// 最小和最大间隔（分钟）
+const MIN_GAP = 1;
+const MAX_GAP = 180;
 
 export default function Home() {
   const [config, setConfig] = useState({
     gold: goldList[0],
-    gap: gapList[0],
+    gap: "20",
     weekdays: [] as number[],
     timeStart: "09:00",
     timeEnd: "18:00",
     whitelist_apps: [] as string[],
   });
   const [installedApps, setInstalledApps] = useState<string[]>([]);
+  const [gapInputValue, setGapInputValue] = useState("20");
+  const [gapError, setGapError] = useState("");
+  const gapInputRef = useRef<HTMLInputElement>(null);
   const { isMacOS } = usePlatform();
 
   useEffect(() => {
@@ -62,7 +66,7 @@ export default function Home() {
 
   useEffect(() => {
     async function loadConfig() {
-      const store = await load(STORE_NAME.config, { autoSave: false });
+      const store = await load(STORE_NAME.config, { autoSave: false, defaults: {} });
       const val = await store.get<{
         gold: string;
         gap: string;
@@ -74,6 +78,10 @@ export default function Home() {
         ...config,
         ...val,
       });
+      // 同步更新输入框的值
+      if (val?.gap) {
+        setGapInputValue(val.gap);
+      }
     }
 
     loadConfig();
@@ -88,7 +96,7 @@ export default function Home() {
       [filed]: value,
     });
 
-    const store = await load(STORE_NAME.config, { autoSave: false });
+    const store = await load(STORE_NAME.config, { autoSave: false, defaults: {} });
     await store.set("alert", {
       ...config,
       [filed]: value,
@@ -141,37 +149,74 @@ export default function Home() {
           </SelectContent>
         </Select>
       </div>
-      <div className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-xs mb-4">
-        <div>
-          <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-            提醒间隔
-          </label>
-          <p
-            id=":r233:-form-item-description"
-            className="text-[0.8rem] text-muted-foreground"
-          ></p>
+      <div className="flex flex-col rounded-lg border p-3 shadow-xs mb-4 gap-3">
+        <div className="flex flex-row items-center justify-between">
+          <div>
+            <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+              提醒间隔
+            </label>
+            <p className="text-[0.8rem] text-muted-foreground">
+              设置喝水提醒的时间间隔
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <Input
+              ref={gapInputRef}
+              type="number"
+              min={MIN_GAP}
+              max={MAX_GAP}
+              value={gapInputValue}
+              onChange={(e) => {
+                const value = e.target.value;
+                setGapInputValue(value);
+                setGapError("");
+              }}
+              onBlur={() => {
+                const numValue = parseInt(gapInputValue);
+                if (isNaN(numValue) || numValue < MIN_GAP) {
+                  setGapError(`最小${MIN_GAP}分钟`);
+                  setGapInputValue(config.gap);
+                } else if (numValue > MAX_GAP) {
+                  setGapError(`最大${MAX_GAP}分钟`);
+                  setGapInputValue(config.gap);
+                } else if (gapInputValue !== config.gap) {
+                  saveConfig("gap", numValue.toString());
+                  setGapInputValue(numValue.toString());
+                }
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  gapInputRef.current?.blur();
+                }
+              }}
+              className="w-[80px] text-center"
+            />
+            <span className="text-sm text-muted-foreground">分钟</span>
+          </div>
         </div>
-        <Select
-          value={config.gap}
-          onValueChange={(value) => {
-            saveConfig("gap", value);
-          }}
-          defaultValue={config.gap}
-        >
-          <SelectTrigger className="w-[120px]">
-            <SelectValue placeholder="选择间隔" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              {/* <SelectLabel>分钟</SelectLabel> */}
-              {gapList.map((gap) => (
-                <SelectItem key={gap} value={gap}>
-                  {gap}分钟
-                </SelectItem>
-              ))}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+        {gapError && (
+          <p className="text-[0.8rem] text-destructive text-right">{gapError}</p>
+        )}
+        <div className="flex gap-2 flex-wrap justify-end">
+          {presetGaps.map((gap) => (
+            <button
+              key={gap}
+              className={`px-3 py-1 rounded-md text-sm font-medium transition-colors cursor-pointer
+                ${
+                  config.gap === gap.toString()
+                    ? "bg-primary text-primary-foreground"
+                    : "border bg-background hover:bg-accent hover:text-accent-foreground"
+                }`}
+              onClick={() => {
+                saveConfig("gap", gap.toString());
+                setGapInputValue(gap.toString());
+                setGapError("");
+              }}
+            >
+              {gap}分钟
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-xs mb-4">
